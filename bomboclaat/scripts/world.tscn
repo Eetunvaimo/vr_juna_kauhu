@@ -1,0 +1,101 @@
+[gd_scene load_steps=13 format=3 uid="uid://bsbgqvcfg8i1w"]
+
+[ext_resource type="PackedScene" uid="uid://djrshw11wibmq" path="res://player.tscn" id="1_2tsk8"]
+[ext_resource type="Texture2D" uid="uid://6yg085uifkv" path="res://Textures/kloofendal_48d_partly_cloudy_puresky_4k.exr" id="1_ras4o"]
+[ext_resource type="Script" uid="uid://nowm4eco2smt" path="res://scripts/Player.gd" id="2_u0x2w"]
+
+[sub_resource type="Shader" id="Shader_58uta"]
+code = "
+// NOTE: Shader automatically converted from Godot Engine 4.4.1.stable's PanoramaSkyMaterial.
+
+shader_type sky;
+
+uniform sampler2D source_panorama : filter_linear, source_color, hint_default_black;
+uniform float speed = 0.002;
+uniform float exposure : hint_range(0, 128) = 1.0;
+
+void sky() {
+	vec2 skyCoords = vec2(SKY_COORDS.x + TIME * speed, SKY_COORDS.y);
+	COLOR = texture(source_panorama, SKY_COORDS).rgb * exposure;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_uxu58"]
+shader = SubResource("Shader_58uta")
+shader_parameter/source_panorama = ExtResource("1_ras4o")
+shader_parameter/speed = 0.02
+shader_parameter/exposure = 1.0
+
+[sub_resource type="Sky" id="Sky_ule47"]
+sky_material = SubResource("ShaderMaterial_uxu58")
+
+[sub_resource type="Environment" id="Environment_22ew4"]
+background_mode = 2
+sky = SubResource("Sky_ule47")
+ambient_light_source = 3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u0x2w"]
+albedo_color = Color(0.0480642, 0.304974, 4.81308e-08, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ras4o"]
+albedo_color = Color(0.621858, 0.956083, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_58uta"]
+albedo_color = Color(0.027451, 1, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uxu58"]
+albedo_color = Color(0.054902, 1, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ule47"]
+albedo_color = Color(0.0509804, 1, 1, 1)
+
+[node name="world" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.924884, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_22ew4")
+
+[node name="player" parent="." instance=ExtResource("1_2tsk8")]
+transform = Transform3D(1, 0, 0, 0, 0.999958, 0.00916285, 0, -0.00916285, 0.999958, -2.07965, 2.10398, -0.548987)
+script = ExtResource("2_u0x2w")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.23999, -0.00456423, -1.42592)
+use_collision = true
+size = Vector3(17.315, 0.001, 16.8305)
+material = SubResource("StandardMaterial3D_u0x2w")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0267255, 7.79919, 22.9337)
+use_collision = true
+size = Vector3(17.4143, 0.001, 16.9944)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -3.33912, 3.9898, 7.12951)
+use_collision = true
+size = Vector3(17.315, 0.001, 7.94064)
+material = SubResource("StandardMaterial3D_ras4o")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGBox3D2"]
+transform = Transform3D(-4.37114e-08, -1, 0, 0.999993, -4.3711e-08, 1.13687e-13, -1.10134e-13, 0, 0.999992, -8.61468, -8.48438, 0.0913014)
+use_collision = true
+size = Vector3(16.8585, 0.001, 7.94064)
+material = SubResource("StandardMaterial3D_58uta")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGBox3D2/CSGBox3D2"]
+transform = Transform3D(-4.37114e-08, -0.999998, 0, 0.999994, -4.37109e-08, 5.32906e-14, -4.97379e-14, -3.55271e-14, 0.999996, -8.43368, -8.90914, 0.00899839)
+use_collision = true
+size = Vector3(17.3071, 0.001, 7.94064)
+material = SubResource("StandardMaterial3D_uxu58")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGBox3D2/CSGBox3D2/CSGBox3D2"]
+transform = Transform3D(-4.37102e-08, -0.999989, 4.15046e-20, 0.999986, -4.37111e-08, 5.40012e-13, -3.09086e-13, -3.55271e-14, 0.999996, -8.48879, -8.42957, 0.0389533)
+use_collision = true
+size = Vector3(16.9185, 0.001, 8.0034)
+material = SubResource("StandardMaterial3D_ule47")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1.19249e-08, 1, 0, -1, 1.19249e-08, 0.0414639, 6.90922, -0.207271)
+light_energy = 3.909
+light_indirect_energy = 2.548
+light_specular = 0.0
